@@ -47,12 +47,14 @@ const Write = () => {
         desc: value,
         cat,
         img: img ? imgUrl : state?.img,
-      }) : await axios.post(`${url}/posts/`, {
+        id: currentUser?.id
+      }) : await axios.post(`${url}posts`, {
         title,
         desc: value,
         cat,
         img: img ? imgUrl : "",
-        date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
+        date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+        id: currentUser?.id
       })
       navigate("/");
     } catch (error) {
