@@ -23,6 +23,8 @@ const Home = () => {
     fetchData();
   }, [cat]);
 
+  console.log(posts);
+
   // const posts = [
   //   {
   //     id: 1,
@@ -58,7 +60,7 @@ const Home = () => {
   return (
     <div className='home'>
       <div className='posts'>
-        {posts?.map((post) => (
+        {posts.length === 0 ? "" : posts?.map((post) => (
           <div className="post" key={post?.id}>
             <div className="img">
               <img src={`../uploads/${post?.img}`} alt="" />

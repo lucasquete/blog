@@ -41,5 +41,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://blog-api-six-silk.vercel.app/api/"
+  "proxy": "http://localhost:8800/api/"
 }
