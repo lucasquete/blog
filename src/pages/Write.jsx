@@ -30,7 +30,7 @@ const Write = () => {
     try {
       const formData = new FormData();
       formData.append("file", img);
-      const res = await axios.post(url + "/upload", formData);
+      const res = await axios.post(url + "upload", formData);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -42,7 +42,7 @@ const Write = () => {
     const imgUrl = await upload();
 
     try {
-      state ? await axios.put(`${url}/posts/${state.id}`, {
+      state ? await axios.put(`${url}posts/${state.id}`, {
         title,
         desc: value,
         cat,
