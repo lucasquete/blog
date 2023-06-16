@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import { useLocation, useNavigate } from 'react-router-dom';
 import moment from "moment"
 import { AuthContext } from '../context/authContext';
+import { url } from '../urls';
 
 const Write = () => {
 
@@ -29,7 +30,7 @@ const Write = () => {
     try {
       const formData = new FormData();
       formData.append("file", img);
-      const res = await axios.post("/upload", formData);
+      const res = await axios.post(url + "/upload", formData);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -41,12 +42,12 @@ const Write = () => {
     const imgUrl = await upload();
 
     try {
-      state ? await axios.put(`/posts/${state.id}`, {
+      state ? await axios.put(`${url}/posts/${state.id}`, {
         title,
         desc: value,
         cat,
         img: img ? imgUrl : state?.img,
-      }) : await axios.post(`/posts/`, {
+      }) : await axios.post(`${url}/posts/`, {
         title,
         desc: value,
         cat,

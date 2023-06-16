@@ -8,6 +8,7 @@ import moment from "moment";
 import { useContext } from 'react'
 import { AuthContext } from '../context/authContext'
 import DOMPurify from "dompurify";
+import { url } from '../urls'
 
 const Single = () => {
 
@@ -24,7 +25,7 @@ const Single = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/posts/${postId}`);
+        const res = await axios.get(`${url}/posts/${postId}`);
         setPost(res.data);
       } catch (error) {
         console.log(error);
@@ -36,7 +37,7 @@ const Single = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/posts/${postId}`);
+      await axios.delete(`${url}/posts/${postId}`);
       navigate("/")
     } catch (error) {
       console.log(error);

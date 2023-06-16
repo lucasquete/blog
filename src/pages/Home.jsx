@@ -3,6 +3,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { url } from '../urls';
 
 const Home = () => {
 
@@ -13,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/api/posts`);
+        const res = await axios.get(`${url}/posts${cat}`);
         setPosts(res.data);
       } catch (error) {
         console.log(error);
@@ -22,8 +23,6 @@ const Home = () => {
 
     fetchData();
   }, [cat]);
-
-  console.log(posts);
 
   // const posts = [
   //   {
@@ -60,7 +59,7 @@ const Home = () => {
   return (
     <div className='home'>
       <div className='posts'>
-        {!posts ? "" : posts?.map((post) => (
+        {posts?.map((post) => (
           <div className="post" key={post?.id}>
             <div className="img">
               <img src={`../uploads/${post?.img}`} alt="" />

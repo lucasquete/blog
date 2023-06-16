@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { url } from '../urls';
 
 const Menu = ({cat, id}) => {
 
@@ -9,7 +10,7 @@ const Menu = ({cat, id}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`/posts/recon?cat=${cat}&id=${id}`);
+        const res = await axios.get(`${url}/posts/recon?cat=${cat}&id=${id}`);
         setPosts(res.data);
       } catch (error) {
         console.log(error);
