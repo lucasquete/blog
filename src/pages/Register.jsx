@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import "../style.scss"
 import axios from "axios";
-import { source } from '../urls';
+import { url } from '../urls';
 
 const Register = () => {
 
@@ -24,7 +24,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(source + "auth/register", inputs);
+      await axios.post(url + "auth/register", inputs);
       navigate("/login");
     } catch (error) {
       setErr(error.response.data);
