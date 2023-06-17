@@ -90,7 +90,7 @@ const Write = () => {
           title,
           desc: value,
           cat,
-          img: imgUrl ? imgUrl : state?.img,
+          img: !imgUrl ? state?.img : imgUrl,
           id: currentUser?.id
         }) : await axios.post(`${url}posts`, {
           title,
