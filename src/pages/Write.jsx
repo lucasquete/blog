@@ -18,6 +18,7 @@ const Write = () => {
   const [value, setValue] = useState(state?.desc || "");
   const [title, setTitle] = useState(state?.title || "");
   const [img, setImg] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null);
   const [cat, setCat] = useState(state?.cat || "");
 
   useEffect(() => {
@@ -26,37 +27,81 @@ const Write = () => {
     }
   }, [currentUser])
 
-  const upload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", img);
-      const res = await axios.post(url + "upload", formData);
-      return res.data;
-    } catch (error) {
-      console.log(error);
+  // const upload = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("file", img);
+  //     const res = await axios.post(url + "upload", formData);
+  //     return res.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleUpload = (e) => {
+    setImg(e.target.files[0]);
+    const file = e.target.files[0];
+
+    transformFile(file);
+  }
+
+  const transformFile = (file) => {
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setImgPreview(reader.result);
+      }
+    } else {
+      setImgPreview(null);
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const imgUrl = await upload();
+    // const imgUrl = await upload();
+    let imgUrl;
+    
+    try {
+      if (
+        img && (
+          img?.type === "image/png" ||
+          img?.type === "jpg" ||
+          img?.type === "jpeg" 
+        )
+      ) {
+        const image = new FormData();
+        image.append("file", img)
+        image.append("cloud_name", "dxyfchqs8")
+        image.append("upload_preset", "blog12");
+
+        const res = await axios.post("https://api.cloudinary.com/v1_1/dxyfchqs8/image/upload", image);
+        const imgData = await res.data;
+        imgUrl = imgData.url.toString();
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
     try {
-      state ? await axios.put(`${url}posts/${state.id}`, {
-        title,
-        desc: value,
-        cat,
-        img: img ? imgUrl : state?.img,
-        id: currentUser?.id
-      }) : await axios.post(`${url}posts`, {
-        title,
-        desc: value,
-        cat,
-        img: img ? imgUrl : "",
-        date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-        id: currentUser?.id
-      })
-      navigate("/");
+      if (imgUrl) {
+        state ? await axios.put(`${url}posts/${state.id}`, {
+          title,
+          desc: value,
+          cat,
+          img: imgUrl ? imgUrl : state?.img,
+          id: currentUser?.id
+        }) : await axios.post(`${url}posts`, {
+          title,
+          desc: value,
+          cat,
+          img: imgUrl ? imgUrl : "",
+          date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+          id: currentUser?.id
+        })
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -79,8 +124,13 @@ const Write = () => {
           <span>
             <b>Visibility: </b> Public
           </span>
-          <input style={{display: "none"}} type="file" id='file' onChange={(e) => setImg(e.target.files[0])}/>
+          <input style={{display: "none"}} type="file" id='file' onChange={handleUpload}/>
           <label className='file' htmlFor="file">Upload image</label>
+          {imgPreview ? (
+            <img src={imgPreview} alt="" style={{width: "50px", height: "50px", objectFit: "cover", margin: "20px 0px"}}/>
+          ) : (
+              <span>No image yet</span>
+          )}
           <div className="buttons">
             <button>Save as a draft</button>
             <button onClick={handleSubmit}>Publish</button>
