@@ -52,27 +52,6 @@ const Write = () => {
     e.preventDefault();
     let imgUrl;
     
-    // try {
-    //   if (
-    //     img && (
-    //       img?.type === "image/png" ||
-    //       img?.type === "jpg" ||
-    //       img?.type === "jpeg" 
-    //     )
-    //   ) {
-    //     const image = new FormData();
-    //     image.append("file", img)
-    //     image.append("cloud_name", "dxyfchqs8")
-    //     image.append("upload_preset", "blog12");
-
-    //     const res = await axios.post("https://api.cloudinary.com/v1_1/dxyfchqs8/image/upload", image);
-    //     const imgData = await res.data;
-    //     imgUrl = imgData.url.toString();
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    
     try {
       const res = await uploadFile(img);
       imgUrl = res;
