@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import moment from "moment"
 import { AuthContext } from '../context/authContext';
 import { url } from '../urls';
+import { uploadFile } from '../firebase/config';
 
 const Write = () => {
 
@@ -26,17 +27,6 @@ const Write = () => {
       navigate("/login");
     }
   }, [currentUser])
-
-  // const upload = async () => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", img);
-  //     const res = await axios.post(url + "upload", formData);
-  //     return res.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleUpload = (e) => {
     setImg(e.target.files[0]);
@@ -60,37 +50,44 @@ const Write = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const imgUrl = await upload();
     let imgUrl;
     
-    try {
-      if (
-        img && (
-          img?.type === "image/png" ||
-          img?.type === "jpg" ||
-          img?.type === "jpeg" 
-        )
-      ) {
-        const image = new FormData();
-        image.append("file", img)
-        image.append("cloud_name", "dxyfchqs8")
-        image.append("upload_preset", "blog12");
+    // try {
+    //   if (
+    //     img && (
+    //       img?.type === "image/png" ||
+    //       img?.type === "jpg" ||
+    //       img?.type === "jpeg" 
+    //     )
+    //   ) {
+    //     const image = new FormData();
+    //     image.append("file", img)
+    //     image.append("cloud_name", "dxyfchqs8")
+    //     image.append("upload_preset", "blog12");
 
-        const res = await axios.post("https://api.cloudinary.com/v1_1/dxyfchqs8/image/upload", image);
-        const imgData = await res.data;
-        imgUrl = imgData.url.toString();
-      }
+    //     const res = await axios.post("https://api.cloudinary.com/v1_1/dxyfchqs8/image/upload", image);
+    //     const imgData = await res.data;
+    //     imgUrl = imgData.url.toString();
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    
+    try {
+      const res = await uploadFile(img);
+      imgUrl = res;
     } catch (error) {
       console.log(error);
     }
+    
 
     try {
-      if (imgUrl) {
+      if (imgUrl || state?.img) {
         state ? await axios.put(`${url}posts/${state.id}`, {
           title,
           desc: value,
           cat,
-          img: !imgUrl ? state?.img : imgUrl,
+          img: imgPreview === null ? state?.img : imgUrl,
           id: currentUser?.id
         }) : await axios.post(`${url}posts`, {
           title,
@@ -126,8 +123,8 @@ const Write = () => {
           </span>
           <input style={{display: "none"}} type="file" id='file' onChange={handleUpload}/>
           <label className='file' htmlFor="file">Upload image</label>
-          {imgPreview ? (
-            <img src={imgPreview} alt="" style={{width: "50px", height: "50px", objectFit: "cover", margin: "20px 0px"}}/>
+          {imgPreview || state?.img ? (
+            <img src={imgPreview === null ? state?.img : imgPreview} alt="" style={{width: "50px", height: "50px", objectFit: "cover", margin: "20px 0px"}}/>
           ) : (
               <span>No image yet</span>
           )}
